@@ -4,22 +4,60 @@ using UnityEngine;
 
 public class PlayerController : MonoBehaviour
 {
-    public float movSpeed;
-    float speedX, speedY;
-    Rigidbody2D rb;
+    [SerializeField] float movSpeed;
+    [SerializeField] float dashSpeed;
+    float currentSpeed;
+    
+    [SerializeField] Rigidbody2D rb;
+    [SerializeField] Vector2 mov;
+    [SerializeField] Animator anim;
+
+    [SerializeField] float dashCooldown;
+
+    bool inDash;
 
     // Start is called before the first frame update
     void Start()
     { 
-        rb = GetComponent<Rigidbody2D>();
-
+        currentSpeed = movSpeed;
     }
 
     // Update is called once per frame
     void Update()
     {
-        speedX = Input.GetAxisRaw("Horizontal") * movSpeed;
-	speedY = Input.GetAxisRaw("Vertical") * movSpeed;
-	rb.velocity = new Vector2(speedX, speedY);
+        if(currentSpeed == movSpeed)
+        {
+            mov.x = Input.GetAxisRaw("Horizontal");
+            mov.y = Input.GetAxisRaw("Vertical");
+        }
+
+        anim.SetFloat("Horizontal", mov.x);
+        anim.SetFloat("Vertical", mov.y);
+        anim.SetFloat("Speed", mov.sqrMagnitude); 
+
+        mov.Normalize();
+
+        if((Input.GetKeyDown(KeyCode.Space) || Input.GetKeyDown(KeyCode.LeftShift))&& mov != Vector2.zero && inDash == false) 
+        {
+            inDash = true;
+            currentSpeed = dashSpeed;
+            Invoke("PosDash", 0.1f);
+        } 
+    }
+
+    private void FixedUpdate()
+    {
+        rb.MovePosition(rb.position + mov * currentSpeed * Time.fixedDeltaTime);
+    }
+
+    void PosDash() 
+    {
+        currentSpeed = movSpeed;
+        Invoke("Dashed", dashCooldown);
+    }
+
+    void Dashed() 
+    {
+        inDash = false;
     }
 }
