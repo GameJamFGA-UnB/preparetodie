@@ -16,6 +16,8 @@ public class PlayerController : MonoBehaviour
 
     bool inDash;
 
+    //private bool isAttacking = false;
+
     // Start is called before the first frame update
     void Start()
     { 
@@ -43,6 +45,8 @@ public class PlayerController : MonoBehaviour
             currentSpeed = dashSpeed;
             Invoke("PosDash", 0.1f);
         } 
+
+        //onAttack();
     }
 
     private void FixedUpdate()
@@ -60,4 +64,20 @@ public class PlayerController : MonoBehaviour
     {
         inDash = false;
     }
+
+    /* void onAttack()
+    {
+        if(Input.GetKeyDown(KeyCode.J))
+        {
+            isAttacking = true;
+            currentSpeed = 0;
+            anim.SetBool("Attack", true);
+        }
+        if(Input.GetKeyUp(KeyCode.J))
+        {
+            isAttacking = false;
+            currentSpeed = movSpeed;
+            anim.SetBool("Attack", false);
+        }
+    } */
 }
