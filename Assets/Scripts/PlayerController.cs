@@ -13,10 +13,11 @@ public class PlayerController : MonoBehaviour
     [SerializeField] Animator anim;
 
     [SerializeField] float dashCooldown;
+    [SerializeField] float attackCooldown;
 
     bool inDash;
 
-    //private bool isAttacking = false;
+    private bool isAttacking = false;
 
     // Start is called before the first frame update
     void Start()
@@ -46,7 +47,12 @@ public class PlayerController : MonoBehaviour
             Invoke("PosDash", 0.1f);
         } 
 
-        //onAttack();
+        if ((Input.GetKeyDown(KeyCode.J) || Input.GetMouseButtonDown(0))&& isAttacking == false)  
+       {
+            isAttacking = true;
+            anim.SetTrigger("Attack");
+            Invoke("PosAttack", 0.1f);
+       }
     }
 
     private void FixedUpdate()
@@ -59,25 +65,18 @@ public class PlayerController : MonoBehaviour
         currentSpeed = movSpeed;
         Invoke("Dashed", dashCooldown);
     }
+    void PosAttack() 
+    {
+        currentSpeed = movSpeed;
+        Invoke("Attacked", attackCooldown);
+    }
 
     void Dashed() 
     {
         inDash = false;
     }
-
-    /* void onAttack()
+    void Attacked()
     {
-        if(Input.GetKeyDown(KeyCode.J))
-        {
-            isAttacking = true;
-            currentSpeed = 0;
-            anim.SetBool("Attack", true);
-        }
-        if(Input.GetKeyUp(KeyCode.J))
-        {
-            isAttacking = false;
-            currentSpeed = movSpeed;
-            anim.SetBool("Attack", false);
-        }
-    } */
+        isAttacking = false;
+    }
 }
