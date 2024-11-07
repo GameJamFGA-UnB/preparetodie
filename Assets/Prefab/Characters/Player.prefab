@@ -15,7 +15,7 @@ GameObject:
   - component: {fileID: 6465233871030852498}
   - component: {fileID: 2216746858000257601}
   - component: {fileID: 6180710788867852310}
-  m_Layer: 0
+  m_Layer: 9
   m_Name: Player
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -107,6 +107,7 @@ MonoBehaviour:
   mov: {x: 0, y: 0}
   anim: {fileID: 6465233871030852498}
   dashCooldown: 0.5
+  attackCooldown: 0
 --- !u!50 &6735807421634801250
 Rigidbody2D:
   serializedVersion: 4

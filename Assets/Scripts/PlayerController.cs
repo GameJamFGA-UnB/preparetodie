@@ -4,6 +4,7 @@ using UnityEngine;
 
 public class PlayerController : MonoBehaviour
 {
+    private GameObject AttackArea = default;
     [SerializeField] float movSpeed;
     [SerializeField] float dashSpeed;
     float currentSpeed;
@@ -13,15 +14,17 @@ public class PlayerController : MonoBehaviour
     [SerializeField] Animator anim;
 
     [SerializeField] float dashCooldown;
-    [SerializeField] float attackCooldown;
+    private float attackCooldown = 0.25f;
+    private float timer = 0f;
 
     bool inDash;
 
-    private bool isAttacking = false;
+    public bool isAttacking = false;
 
     // Start is called before the first frame update
     void Start()
     { 
+        AttackArea = transform.GetChild(0).gameObject;
         currentSpeed = movSpeed;
     }
 
@@ -47,12 +50,22 @@ public class PlayerController : MonoBehaviour
             Invoke("PosDash", 0.1f);
         } 
 
-        if ((Input.GetKeyDown(KeyCode.J) || Input.GetMouseButtonDown(0))&& isAttacking == false)  
-       {
-            isAttacking = true;
-            anim.SetTrigger("Attack");
-            Invoke("PosAttack", 0.1f);
-       }
+        if((Input.GetKeyDown(KeyCode.J) || Input.GetMouseButtonDown(0))&& isAttacking == false)  
+        {
+            Attack();
+        }
+        if(isAttacking) 
+        {
+            timer += Time.deltaTime;
+
+            if(timer>=attackCooldown)
+            {
+                timer = 0;
+                isAttacking = false;
+                AttackArea.SetActive(isAttacking);
+
+            }
+        }
     }
 
     private void FixedUpdate()
@@ -65,18 +78,17 @@ public class PlayerController : MonoBehaviour
         currentSpeed = movSpeed;
         Invoke("Dashed", dashCooldown);
     }
-    void PosAttack() 
-    {
-        currentSpeed = movSpeed;
-        Invoke("Attacked", attackCooldown);
-    }
 
     void Dashed() 
     {
         inDash = false;
     }
-    void Attacked()
+
+    void Attack()
     {
-        isAttacking = false;
+        isAttacking = true;
+        anim.SetTrigger("Attack");
+        AttackArea.SetActive(isAttacking);
     }
+
 }
