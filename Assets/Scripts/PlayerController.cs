@@ -4,6 +4,8 @@ using UnityEngine;
 
 public class PlayerController : MonoBehaviour
 {
+    public AudioSource attackSound;
+    //public AudioSource running;
     private GameObject AttackArea = default;
     [SerializeField] float movSpeed;
     [SerializeField] float dashSpeed;
@@ -35,6 +37,7 @@ public class PlayerController : MonoBehaviour
         {
             mov.x = Input.GetAxisRaw("Horizontal");
             mov.y = Input.GetAxisRaw("Vertical");
+            //running.Play();
         }
 
         anim.SetFloat("Horizontal", mov.x);
@@ -88,6 +91,7 @@ public class PlayerController : MonoBehaviour
     {
         isAttacking = true;
         anim.SetTrigger("Attack");
+        attackSound.Play();
         AttackArea.SetActive(isAttacking);
     }
 
