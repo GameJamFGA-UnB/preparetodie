@@ -23,11 +23,19 @@ public class EnemyBehavior : MonoBehaviour
 
     [SerializeField]
     private LayerMask layerAreaVisao;
-    
+
+    [SerializeField]
+    private float distanciaMaximaAtaque;
+
+    [SerializeField]
+    private float intervaloEntreAtaquesEmSegundos;
+
+    private float tempoEsperaProximoAtaqueEmSegundos;
+
     // Start is called before the first frame update
     void Start()
     {
-        
+        this.tempoEsperaProximoAtaqueEmSegundos = this.intervaloEntreAtaquesEmSegundos;
     }
 
     // Update is called once per frame
@@ -36,9 +44,26 @@ public class EnemyBehavior : MonoBehaviour
         ProcurarJogador();
         if (this.alvo != null) {
             Mover();
+            VerificarPossibilidadeAtaque();
         } else {
             PararMovimentacao();
         }
+    }
+
+    private void VerificarPossibilidadeAtaque() {
+        float distancia = Vector3.Distance(this.transform.position, this.alvo.position);
+        if (distancia <= this.distanciaMaximaAtaque) {
+            this.tempoEsperaProximoAtaqueEmSegundos -= Time.deltaTime;
+            if (this.tempoEsperaProximoAtaqueEmSegundos <= 0) {
+                this.tempoEsperaProximoAtaqueEmSegundos = this.intervaloEntreAtaquesEmSegundos;
+                Atacar();
+            }
+        }
+    }
+
+    private void Atacar() {
+        Health jogador = this.alvo.GetComponent<Health>();
+        jogador.Damage(2);
     }
 
     private void OnDrawGizmos() {
